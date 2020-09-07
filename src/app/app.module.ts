@@ -60,5 +60,5 @@ import { NeighborsComponent } from './neighbors/neighbors.component';
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  title = 'banwig';
+  title = 'ighestates';
 }

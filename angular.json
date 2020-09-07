@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "banwig": {
+    "ighestates": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/banwig",
+            "outputPath": "dist/ighestates",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -24,7 +24,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/banwig-theme.scss",
+              "src/ighestates-theme.scss",
               "src/styles.css"
             ],
             "scripts": []
@@ -63,18 +63,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "banwig:build"
+            "browserTarget": "ighestates:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "banwig:build:production"
+              "browserTarget": "ighestates:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "banwig:build"
+            "browserTarget": "ighestates:build"
           }
         },
         "test": {
@@ -112,16 +112,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "banwig:serve"
+            "devServerTarget": "ighestates:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "banwig:serve:production"
+              "devServerTarget": "ighestates:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "banwig"
+  "defaultProject": "ighestates"
 }

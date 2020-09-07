@@ -1,0 +1,38 @@
+@import '~@angular/material/theming';
+@include mat-core();
+
+$primary: (
+  Main: #99463d,
+  Light: #cd7368,
+  Dark: #661a17,
+  contrast: (
+    Main: #f5f5f5,
+    Light: #000,
+    Dark: #fff
+  ));
+
+$accent: (
+  Main: #747c92,
+  Light: #a3abc2,
+  Dark: #485064,
+  contrast: (
+    Main: #000,
+    Light: #000,
+    Dark: #000
+  ));
+
+$warn:$mat-red;
+
+$ighestates-primary-color: mat-palette($primary, Main, Light, Dark);
+$ighestates-accent-color:  mat-palette($accent, Main, Light, Dark);
+$ighestates-warn-color:    mat-palette($warn);
+
+$ighestates-theme: mat-light-theme((
+  color: (
+    primary: $ighestates-primary-color,
+    accent: $ighestates-accent-color,
+    warn: $ighestates-warn-color,
+  )
+));
+
+@include angular-material-theme($ighestates-theme);
