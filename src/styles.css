@@ -1,1 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.center_img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+html{
+  height: 100%;
+}
+
+body {
+
+  margin: 0;
+  height: 100%;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
