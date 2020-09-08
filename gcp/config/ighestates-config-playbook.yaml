@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  become: true
+  tasks:
+    - name: install apt packages
+      apt:
+        name: {{ item }}
+        state: present
+      loop:
+        - nodejs
+        - npm

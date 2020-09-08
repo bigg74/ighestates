@@ -1,0 +1,8 @@
+imports:
+  - path: .\ighestates-infrastructure-template.jinja
+
+resources:
+  - name: ighestates
+    type: .\ighestates-infrastructure-template.jinja
+    properties:
+      deploy_env: dev

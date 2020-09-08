@@ -1,0 +1,43 @@
+{% set NAME_PREFIX = properties["deploy_env"] + env['name'] %}
+
+resources:
+- type: compute.v1.instanceTemplate
+  name: {{ NAME_PREFIX }}-instance-template
+  properties:
+    properties:
+      zone: us-central1-a
+      machineType: f1-micro
+      metadata:
+        items:
+        - key: startup-script
+          value: |
+            #!/bin/bash
+            exec &>> /var/log/bootstrap_details.log
+            apt-get install -y ansible wget unzip
+            wget https://github.com/bigg74/ighestates/archive/master.zip --output-document=/tmp/ighestates.zip
+            unzip ighestates.zip -d /tmp
+            ansible-playbook /tmp/ighestates/gcp/config/ighestates-config-playbook.yaml
+      scheduling:
+        preemptible: true
+      disks:
+      - deviceName: boot
+        type: PERSISTENT
+        boot: true
+        autoDelete: true
+        initializeParams:
+          diskName: {{ NAME_PREFIX }}-disk
+          sourceImage: https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/family/debian-10
+      networkInterfaces:
+      - network: https://www.googleapis.com/compute/v1/projects/{{ env["project"] }}/global/networks/default
+        accessConfigs:
+        - name: External NAT
+          type: ONE_TO_ONE_NAT
+
+- type: compute.v1.instanceGroupManager
+  name: {{ NAME_PREFIX }}-instance-group
+  properties:
+    baseInstanceName: {{ NAME_PREFIX }}-vm
+    instanceTemplate: $(ref.{{ NAME_PREFIX }}-instance-template.selfLink)
+    targetSize: 1
+    zone: us-central1-c
+    region: us-central1
