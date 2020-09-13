@@ -37,8 +37,7 @@
     - name: build and deploy app
       shell:
         cmd: "{{ item }}"
-        args:
-          chdir: /tmp/ighestates-master/
+        chdir: /tmp/ighestates-master/
       loop:
         - "ng update @angular/cli @angular/core"
         #- "ng build --prod"
