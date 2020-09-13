@@ -4,8 +4,15 @@
   tasks:
     - name: install apt packages
       apt:
-        name: {{ item }}
+        name: "{{ item }}"
         state: present
       loop:
         - nodejs
         - npm
+
+    - name: install ansible
+      npm:
+        name: '@angular/cli'
+        global: yes
+
+
