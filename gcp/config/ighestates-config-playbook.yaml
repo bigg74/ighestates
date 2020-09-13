@@ -1,6 +1,5 @@
 ---
 - hosts: localhost
-  become: true
   tasks:
 
     - name: get node package
@@ -8,14 +7,13 @@
         src: https://nodejs.org/dist/v12.18.3/node-v12.18.3-linux-x64.tar.xz
         dest: /opt
         remote_src: yes
-        owner: root
-        group: root
-        mode: 0755
+        mode: 0744
 
     - name: create links for node bin directory
       file:
         src: /opt/node-v12.18.3-linux-x64/bin/{{ item }}
         dest: /usr/local/bin/{{ item }}
+        mode: 0755
         state: link
       loop:
         - node
@@ -32,6 +30,7 @@
       file:
         src: /opt/node-v12.18.3-linux-x64/lib/node_modules/@angular/cli/bin/ng
         dest: /usr/local/bin/ng
+        mode: 0755
         state: link
 
     - name: build and deploy app
@@ -39,7 +38,7 @@
         cmd: "{{ item }}"
         chdir: /tmp/ighestates-master/
       loop:
-        - "ng update @angular/cli @angular/core"
+        #- "ng update @angular/cli @angular/core"
         #- "ng build --prod"
         - "ng add ngx-deploy-npm"
         - "ng deploy ighestates"
