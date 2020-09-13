@@ -5,15 +5,24 @@
     - name: get node package
       unarchive:
         src: https://nodejs.org/dist/v12.18.3/node-v12.18.3-linux-x64.tar.xz
-        dest: /opt
+        dest: /opt/node/
+        extra_opts: [--strip-components=1]
         remote_src: yes
-        mode: 0744
+
+    - name: set node permissions
+      file:
+        path: /opt/node/
+        owner: bigg74
+        group: bigg74
+        recurse: yes
 
     - name: create links for node bin directory
       file:
-        src: /opt/node-v12.18.3-linux-x64/bin/{{ item }}
+        src: /opt/node/bin/{{ item }}
         dest: /usr/local/bin/{{ item }}
         mode: 0755
+        owner: bigg74
+        group: bigg74
         state: link
       loop:
         - node
@@ -28,9 +37,11 @@
 
     - name: create links for angular
       file:
-        src: /opt/node-v12.18.3-linux-x64/lib/node_modules/@angular/cli/bin/ng
+        src: /opt/node/lib/node_modules/@angular/cli/bin/ng
         dest: /usr/local/bin/ng
         mode: 0755
+        owner: bigg74
+        group: bigg74
         state: link
 
     - name: build and deploy app
