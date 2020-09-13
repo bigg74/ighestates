@@ -1,18 +1,49 @@
 ---
 - hosts: localhost
   become: true
+  environment:
+    ANSIBLE_CALLBACK_WHITELIST: profile_tasks
   tasks:
-    - name: install apt packages
-      apt:
-        name: "{{ item }}"
-        state: present
-      loop:
-        - nodejs
-        - npm
+#    - name: install apt packages
+#      apt:
+#        name: "{{ item }}"
+#        state: present
+#      loop:
+#        - nodejs
+#        - npm
 
-    - name: install ansible
+    - name: get node package
+      unarchive:
+        src: https://nodejs.org/dist/v12.18.3/node-v12.18.3-linux-x64.tar.xz
+        dest: /opt
+        remote_src: yes
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: create links for node bin directory
+      file:
+        src: /opt/node-v12.18.3-linux-x64/bin/{{ item }}
+        dest: /usr/bin/{{ item }}
+        state: link
+      loop:
+        - node
+        - npm
+        - npx
+
+    - name: install angular
       npm:
         name: '@angular/cli'
         global: yes
 
+    - name: build and deploy app
+      shell:
+        cmd: "{{ item }}"
+        args:
+          chdir: /tmp/ighestates-master/
+      loop:
+        - "ng build --prod"
+        - "ng update @angular/cli @angular/core"
+        - "ng add ngx-deploy-npm"
+        - "ng deploy ighestates"
 
