@@ -1,8 +1,6 @@
 ---
 - hosts: localhost
   become: true
-  environment:
-    ANSIBLE_CALLBACK_WHITELIST: profile_tasks
   tasks:
 
     - name: get node package
@@ -24,16 +22,17 @@
         - npm
         - npx
 
-#    - name: install angular
-#      npm:
-#        name: '@angular/cli'
-#        state: present
-#        global: yes
-#        path: /usr/local/bin/
-#        executable: /usr/local/bin/
-
     - name: install angular
-      shell: 'npm install -g @angular/cli'
+      npm:
+        name: '@angular/cli'
+        state: present
+        global: yes
+
+    - name: create links for angular
+      file:
+        src: /opt/node-v12.18.3-linux-x64/lib/node_modules/@angular/cli/bin/ng
+        dest: /usr/local/bin/ng
+        state: link
 
     - name: build and deploy app
       shell:
@@ -41,8 +40,8 @@
         args:
           chdir: /tmp/ighestates-master/
       loop:
-        - "ng build --prod"
         - "ng update @angular/cli @angular/core"
+        #- "ng build --prod"
         - "ng add ngx-deploy-npm"
         - "ng deploy ighestates"
 
