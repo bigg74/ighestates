@@ -4,13 +4,6 @@
   environment:
     ANSIBLE_CALLBACK_WHITELIST: profile_tasks
   tasks:
-#    - name: install apt packages
-#      apt:
-#        name: "{{ item }}"
-#        state: present
-#      loop:
-#        - nodejs
-#        - npm
 
     - name: get node package
       unarchive:
@@ -24,17 +17,23 @@
     - name: create links for node bin directory
       file:
         src: /opt/node-v12.18.3-linux-x64/bin/{{ item }}
-        dest: /usr/bin/{{ item }}
+        dest: /usr/local/bin/{{ item }}
         state: link
       loop:
         - node
         - npm
         - npx
 
+#    - name: install angular
+#      npm:
+#        name: '@angular/cli'
+#        state: present
+#        global: yes
+#        path: /usr/local/bin/
+#        executable: /usr/local/bin/
+
     - name: install angular
-      npm:
-        name: '@angular/cli'
-        global: yes
+      shell: 'npm install -g @angular/cli'
 
     - name: build and deploy app
       shell:
