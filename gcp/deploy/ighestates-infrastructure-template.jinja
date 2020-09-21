@@ -42,18 +42,30 @@ resources:
     targetSize: 1
     zone: us-central1-c
     region: us-central1
+    namedPorts:
+      - name: nodeport
+        port: {{ properties["port"] }}
 
 - name: {{ NAME_PREFIX }}-health-check
   type: compute.v1.httpHealthCheck
   properties:
-    port: {{ properties["port"] }}
+    httpHealthCheck:
+        portName: nodeport
+    type: HTTP
+    checkIntervalSec: 10
+    timeoutSec: 5
+    healthyThreshold: 2
+    unhealthyThreshold: 3
 
 - name: {{ NAME_PREFIX }}-backend-service
   type: compute.v1.backendService
   properties:
     port: {{ properties["port"] }}
-    portName: httpPort
+    protocol: HTTP
+    portName: nodeport
+    loadBalancingScheme: EXTERNAL
     backends:
-      - name: {{ NAME_PREFIX }}-primary-be
-        group: $(ref.{{ NAME_PREFIX }}-instance-group.instanceGroup)
+      - group: $(ref.{{ NAME_PREFIX }}-instance-group.instanceGroup)
     healthChecks: [ $(ref.{{ NAME_PREFIX }}-health-check.selfLink) ]
+
+
