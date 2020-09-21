@@ -6,3 +6,4 @@ resources:
     type: .\ighestates-infrastructure-template.jinja
     properties:
       deploy_env: dev
+      port: 8080

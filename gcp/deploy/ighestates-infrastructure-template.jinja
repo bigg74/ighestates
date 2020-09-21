@@ -17,7 +17,7 @@ resources:
             wget https://github.com/bigg74/ighestates/archive/master.zip --output-document=/tmp/ighestates.zip
             unzip /tmp/ighestates.zip -d /tmp
             export ANSIBLE_CALLBACK_WHITELIST=profile_tasks
-            ansible-playbook /tmp/ighestates-master/gcp/config/ighestates-config-playbook.yaml
+            ansible-playbook /tmp/ighestates-master/gcp/config/ighestates-config-playbook.yaml -vvv
       scheduling:
         preemptible: true
       disks:
@@ -42,3 +42,18 @@ resources:
     targetSize: 1
     zone: us-central1-c
     region: us-central1
+
+- name: {{ NAME_PREFIX }}-health-check
+  type: compute.v1.httpHealthCheck
+  properties:
+    port: {{ properties["port"] }}
+
+- name: {{ NAME_PREFIX }}-backend-service
+  type: compute.v1.backendService
+  properties:
+    port: {{ properties["port"] }}
+    portName: httpPort
+    backends:
+      - name: {{ NAME_PREFIX }}-primary-be
+        group: $(ref.{{ NAME_PREFIX }}-instance-group.instanceGroup)
+    healthChecks: [ $(ref.{{ NAME_PREFIX }}-health-check.selfLink) ]

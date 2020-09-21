@@ -1,5 +1,7 @@
 ---
 - hosts: localhost
+  environment:
+    NG_CLI_ANALYTICS: false
   vars:
     source_path: /var/www
   tasks:
@@ -17,9 +19,11 @@
       npm:
         name: "{{ item }}"
         global: yes
+        state: present
+        path: /tmp/ighestates-master/
       loop:
-        - express
         - pm2
+        - express
 
     - name: make {{ source_path }} directory
       become: true
@@ -32,3 +36,6 @@
       copy:
         src: /tmp/ighestates-master/dist/ighestates
         dest: "{{ source_path }}"
+
+    - name: start pm2
+      shell: pm2 start /tmp/ighestates-master/gcp/config/server.js --name ighestates
