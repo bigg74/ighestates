@@ -1,0 +1,11 @@
+{
+  "apps" : [{
+    "env": {
+      "NODE_PATH": "..."
+    },
+    "exec_mode": "fork",
+    "name"        : "ighestates",
+    "script"      : "./server.js",
+    "watch"       : false
+  }]
+}
