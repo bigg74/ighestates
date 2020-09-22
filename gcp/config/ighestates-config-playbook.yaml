@@ -1,9 +1,8 @@
 ---
 - hosts: localhost
-  environment:
-    NG_CLI_ANALYTICS: false
   vars:
     source_path: /var/www
+    config_path: /tmp/ighestates-master/gcp/config
   tasks:
     - name: install node and npm
       become: true
@@ -20,10 +19,15 @@
         name: "{{ item }}"
         global: yes
         state: present
-        path: /tmp/ighestates-master/gcp/config
+        path: "{{ config_path }}"
       loop:
         - pm2
-        - express
+
+    - name: install express
+      become: true
+      shell: npm install -g express
+      args:
+        chdir: "{{ config_path }}"
 
     - name: make {{ source_path }} directory
       become: true
@@ -38,4 +42,4 @@
         dest: "{{ source_path }}"
 
     - name: start pm2
-      shell: pm2 start /tmp/ighestates-master/gcp/config/server.js --name ighestates
+      shell: pm2 start {{ config_path }}/server.js --name ighestates
