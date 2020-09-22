@@ -47,15 +47,15 @@ resources:
         port: {{ properties["port"] }}
 
 - name: {{ NAME_PREFIX }}-health-check
-  type: compute.v1.httpHealthCheck
+  type: compute.v1.healthCheck
   properties:
-    httpHealthCheck:
-        portName: nodeport
-    type: HTTP
     checkIntervalSec: 10
     timeoutSec: 5
     healthyThreshold: 2
     unhealthyThreshold: 3
+    type: HTTP
+    httpHealthCheck:
+      portName: nodeport
 
 - name: {{ NAME_PREFIX }}-backend-service
   type: compute.v1.backendService
@@ -68,4 +68,35 @@ resources:
       - group: $(ref.{{ NAME_PREFIX }}-instance-group.instanceGroup)
     healthChecks: [ $(ref.{{ NAME_PREFIX }}-health-check.selfLink) ]
 
+- name: {{ NAME_PREFIX }}-urlmap
+  type: compute.v1.urlMap
+  properties:
+    defaultService: $(ref.{{ NAME_PREFIX }}-backend-service.selfLink)
+
+- name: {{ NAME_PREFIX }}-https-proxy
+  type: compute.v1.targetHttpsProxy
+  properties:
+    sslCertificates:
+      - $(ref.{{ NAME_PREFIX }}-ssl-cert.selfLink)
+    urlMap: $(ref.{{ NAME_PREFIX }}-urlmap.selfLink)
+
+- name: {{ NAME_PREFIX }}-ssl-cert
+  type: compute.v1.sslCertificate
+  properties:
+    type: MANAGED
+    managed:
+      domains:
+        - ighestates.com
+
+- name: {{ NAME_PREFIX }}-elb-ip
+  type: compute.v1.globalAddress
+
+- name: {{ NAME_PREFIX }}-forwarding-rule
+  type: compute.v1.globalForwardingRule
+  properties:
+    IPAddress: $(ref.{{ NAME_PREFIX }}-elb-ip.selfLink)
+    IPProtocol: TCP
+    loadBalancingScheme: EXTERNAL
+    portRange: 443
+    target: $(ref.{{ NAME_PREFIX }}-https-proxy.selfLink)
 

@@ -20,7 +20,7 @@
         name: "{{ item }}"
         global: yes
         state: present
-        path: /tmp/ighestates-master/
+        path: /tmp/ighestates-master/gcp/config
       loop:
         - pm2
         - express
