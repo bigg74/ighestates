@@ -1,11 +1,13 @@
 ---
 - hosts: localhost
   vars:
-    www_www_source_path: /var/www
+    www_source_path: /var/www
     config_path: /tmp/ighestates-master/gcp/config
     node_install_path: /usr/local/lib/node_modules
-  environment:
-    NODE_PATH: "{{ node_install_path }}"
+    pm2_file: "{{ config_path }}/pm2_processor.json"
+#  environment:
+#    NODE_PATH: "{{ node_install_path }}"
+
   tasks:
     - name: install node and npm
       become: true
@@ -27,12 +29,6 @@
         - pm2
         - express
 
-#    - name: install express
-#      become: true
-#      shell: npm install -g express
-#      args:
-#        chdir: "{{ config_path }}"
-
     - name: make {{ www_source_path }} directory
       become: true
       file:
@@ -47,11 +43,11 @@
 
     - name: update pm2 processor file
       replace:
-        path:
+        path: "{{ pm2_file }}"
         regexp: '"NODE_PATH": "..."'
         replace: '"NODE_PATH": "{{ node_install_path }}"'
 
     - name: start pm2
-      shell: pm2 start pm2_processor.json
+      shell: pm2 start {{ pm2_file }}
       args:
         chdir: "{{ config_path }}"

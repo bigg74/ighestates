@@ -5,7 +5,7 @@ resources:
   name: {{ NAME_PREFIX }}-instance-template
   properties:
     properties:
-      zone: us-central1-a
+      zone: {{ properties['zone'] }}
       machineType: f1-micro
       metadata:
         items:
@@ -40,11 +40,15 @@ resources:
     baseInstanceName: {{ NAME_PREFIX }}-vm
     instanceTemplate: $(ref.{{ NAME_PREFIX }}-instance-template.selfLink)
     targetSize: 1
-    zone: us-central1-c
+    zone: {{ properties['zone'] }}
     region: us-central1
+    autoHealingPolicy:
+      - healthCheck: $(ref.{{ NAME_PREFIX }}-health-check.selfLink)
+        initialDelaySec: 300
     namedPorts:
       - name: nodeport
         port: {{ properties["port"] }}
+
 
 - name: {{ NAME_PREFIX }}-health-check
   type: compute.v1.healthCheck

@@ -7,3 +7,4 @@ resources:
     properties:
       deploy_env: dev
       port: 8080
+      zone: us-central1-c
