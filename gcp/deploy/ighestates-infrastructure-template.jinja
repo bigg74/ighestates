@@ -77,7 +77,7 @@ resources:
   properties:
     defaultService: $(ref.{{ NAME_PREFIX }}-backend-service.selfLink)
 
-- name: {{ NAME_PREFIX }}-https-proxy
+- name: {{ NAME_PREFIX }}-http-proxy
   type: compute.v1.targetHttpProxy
   properties:
     urlMap: $(ref.{{ NAME_PREFIX }}-urlmap.selfLink)
@@ -100,7 +100,7 @@ resources:
 - name: {{ NAME_PREFIX }}-elb-ip
   type: compute.v1.globalAddress
 
-- name: {{ NAME_PREFIX }}-forwarding-rule
+- name: {{ NAME_PREFIX }}-https-forwarding-rule
   type: compute.v1.globalForwardingRule
   properties:
     IPAddress: $(ref.{{ NAME_PREFIX }}-elb-ip.selfLink)
@@ -108,3 +108,12 @@ resources:
     loadBalancingScheme: EXTERNAL
     portRange: 443
     target: $(ref.{{ NAME_PREFIX }}-https-proxy.selfLink)
+
+- name: {{ NAME_PREFIX }}-http-forwarding-rule
+  type: compute.v1.globalForwardingRule
+  properties:
+    IPAddress: $(ref.{{ NAME_PREFIX }}-elb-ip.selfLink)
+    IPProtocol: TCP
+    loadBalancingScheme: EXTERNAL
+    portRange: 80
+    target: $(ref.{{ NAME_PREFIX }}-http-proxy.selfLink)
