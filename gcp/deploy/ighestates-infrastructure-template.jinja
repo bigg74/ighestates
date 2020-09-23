@@ -46,7 +46,7 @@ resources:
       - healthCheck: $(ref.{{ NAME_PREFIX }}-health-check.selfLink)
         initialDelaySec: 300
     namedPorts:
-      - name: nodeport
+      - name: httpport
         port: {{ properties["port"] }}
 
 
@@ -59,14 +59,14 @@ resources:
     unhealthyThreshold: 3
     type: HTTP
     httpHealthCheck:
-      portName: nodeport
+      portName: httpport
 
 - name: {{ NAME_PREFIX }}-backend-service
   type: compute.v1.backendService
   properties:
     port: {{ properties["port"] }}
     protocol: HTTP
-    portName: nodeport
+    portName: httpport
     loadBalancingScheme: EXTERNAL
     backends:
       - group: $(ref.{{ NAME_PREFIX }}-instance-group.instanceGroup)
@@ -76,6 +76,11 @@ resources:
   type: compute.v1.urlMap
   properties:
     defaultService: $(ref.{{ NAME_PREFIX }}-backend-service.selfLink)
+
+- name: {{ NAME_PREFIX }}-https-proxy
+  type: compute.v1.targetHttpProxy
+  properties:
+    urlMap: $(ref.{{ NAME_PREFIX }}-urlmap.selfLink)
 
 - name: {{ NAME_PREFIX }}-https-proxy
   type: compute.v1.targetHttpsProxy
@@ -103,4 +108,3 @@ resources:
     loadBalancingScheme: EXTERNAL
     portRange: 443
     target: $(ref.{{ NAME_PREFIX }}-https-proxy.selfLink)
-

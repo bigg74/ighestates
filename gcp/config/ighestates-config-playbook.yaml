@@ -51,3 +51,15 @@
       shell: pm2 start {{ pm2_file }}
       args:
         chdir: "{{ config_path }}"
+
+    - name: copy nginx server conf
+      become: true
+      copy:
+        src: "{{ config_path }}/server.conf"
+        dest: /etc/nginx/conf.d/server.conf
+
+    - name: restart nginx
+      become: true
+      service:
+        name: nginx
+        state: restarted
