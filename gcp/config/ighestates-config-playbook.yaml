@@ -3,10 +3,8 @@
   vars:
     www_source_path: /var/www
     config_path: /tmp/ighestates-master/gcp/config
-    node_install_path: /usr/local/lib/node_modules
+    node_install_path: "{{ www_source_path }}/ighestates"
     pm2_file: "{{ config_path }}/pm2_processor.json"
-#  environment:
-#    NODE_PATH: "{{ node_install_path }}"
 
   tasks:
     - name: install node and npm
@@ -19,16 +17,6 @@
         - npm
         - nginx
 
-    - name: install npm packages
-      npm:
-        name: "{{ item }}"
-        global: yes
-        state: present
-        path: "{{ config_path }}"
-      loop:
-        - pm2
-        - express
-
     - name: make {{ www_source_path }} directory
       become: true
       file:
@@ -40,6 +28,21 @@
       copy:
         src: /tmp/ighestates-master/dist/ighestates
         dest: "{{ www_source_path }}"
+
+#    - name: install npm packages
+#      npm:
+#        name: "{{ item }}"
+#        global: yes
+#        state: present
+#        path: "{{ config_path }}"
+#      loop:
+#        - pm2
+#        - express
+#        - ejs
+
+    - name: install npm packages
+      become: ture
+      shell: npm install {{ config_path }} --prefix {{ node_install_path }}
 
     - name: update pm2 processor file
       replace:

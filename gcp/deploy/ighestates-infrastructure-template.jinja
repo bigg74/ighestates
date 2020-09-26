@@ -72,22 +72,29 @@ resources:
       - group: $(ref.{{ NAME_PREFIX }}-instance-group.instanceGroup)
     healthChecks: [ $(ref.{{ NAME_PREFIX }}-health-check.selfLink) ]
 
-- name: {{ NAME_PREFIX }}-urlmap
+- name: {{ NAME_PREFIX }}-https-urlmap
   type: compute.v1.urlMap
   properties:
     defaultService: $(ref.{{ NAME_PREFIX }}-backend-service.selfLink)
 
+- name: {{ NAME_PREFIX }}-http-urlmap
+  type: compute.v1.urlMap
+  properties:
+    defaultUrlRedirect:
+      httpsRedirect: true
+      redirectResponseCode: FOUND
+
 - name: {{ NAME_PREFIX }}-http-proxy
   type: compute.v1.targetHttpProxy
   properties:
-    urlMap: $(ref.{{ NAME_PREFIX }}-urlmap.selfLink)
+    urlMap: $(ref.{{ NAME_PREFIX }}-http-urlmap.selfLink)
 
 - name: {{ NAME_PREFIX }}-https-proxy
   type: compute.v1.targetHttpsProxy
   properties:
     sslCertificates:
       - $(ref.{{ NAME_PREFIX }}-ssl-cert.selfLink)
-    urlMap: $(ref.{{ NAME_PREFIX }}-urlmap.selfLink)
+    urlMap: $(ref.{{ NAME_PREFIX }}-https-urlmap.selfLink)
 
 - name: {{ NAME_PREFIX }}-ssl-cert
   type: compute.v1.sslCertificate
