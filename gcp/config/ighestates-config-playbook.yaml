@@ -7,7 +7,7 @@
     pm2_file: "{{ config_path }}/pm2_processor.json"
 
   tasks:
-    - name: install node and npm
+    - name: install apt packages
       become: true
       apt:
         name: "{{ item }}"
@@ -26,8 +26,11 @@
     - name: copy source to /var/www
       become: true
       copy:
-        src: /tmp/ighestates-master/dist/ighestates
-        dest: "{{ www_source_path }}"
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      loop:
+        - {src: '/tmp/ighestates-master/dist/ighestates', dest: "{{ www_source_path }}"}
+        - {src: "{{ config_path }}/package.json", dest: "{{ www_source_path }}/ighestates/"}
 
 #    - name: install npm packages
 #      npm:
@@ -42,7 +45,7 @@
 
     - name: install npm packages
       become: ture
-      shell: npm install {{ config_path }} --prefix {{ node_install_path }}
+      shell: npm install pm2 -g {{ www_source_path }}/ighestates/
 
     - name: update pm2 processor file
       replace:
