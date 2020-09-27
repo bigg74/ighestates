@@ -3,7 +3,7 @@
   vars:
     www_source_path: /var/www
     config_path: /tmp/ighestates-master/gcp/config
-    node_install_path: "{{ www_source_path }}/ighestates"
+    node_install_path: "{{ www_source_path }}/ighestates/node_modules"
     pm2_file: "{{ config_path }}/pm2_processor.json"
 
   tasks:
