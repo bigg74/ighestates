@@ -24,5 +24,6 @@
 .title {
   text-rendering: optimizeLegibility;
   text-decoration: none;
-  color: black;
+  
+  color: white;
 }
