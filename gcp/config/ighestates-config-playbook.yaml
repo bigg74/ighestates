@@ -16,6 +16,7 @@
         - nodejs
         - npm
         - nginx
+      register: result
       retries: 10
       delay: 60
       until: result is not failed
@@ -35,20 +36,10 @@
         - {src: '/tmp/ighestates-master/dist/ighestates', dest: "{{ www_source_path }}"}
         - {src: "{{ config_path }}/package.json", dest: "{{ www_source_path }}/ighestates/"}
 
-#    - name: install npm packages
-#      npm:
-#        name: "{{ item }}"
-#        global: yes
-#        state: present
-#        path: "{{ config_path }}"
-#      loop:
-#        - pm2
-#        - express
-#        - ejs
-
     - name: install npm packages
       become: ture
       shell: npm install pm2 -g {{ www_source_path }}/ighestates/
+      register: result
       retries: 10
       delay: 60
       until: result is not failed
